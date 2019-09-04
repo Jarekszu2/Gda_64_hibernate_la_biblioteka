@@ -1,4 +1,4 @@
-package invoice;
+package biblioteka.packUtil;
 
 public interface IBaseEntity {
     Long getId();

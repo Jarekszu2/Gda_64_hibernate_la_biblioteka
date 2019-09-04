@@ -1,5 +1,7 @@
-package invoice;
+package biblioteka.packDao;
 
+import biblioteka.packUtil.HibernateUtil;
+import biblioteka.packUtil.IBaseEntity;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
