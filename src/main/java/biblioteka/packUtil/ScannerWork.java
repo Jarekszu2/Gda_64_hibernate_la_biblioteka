@@ -6,6 +6,7 @@ import biblioteka.packModel.Book;
 import biblioteka.packModel.Client;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -17,6 +18,11 @@ public class ScannerWork {
         char znak = 'a';
         znak = scanner.nextLine().charAt(0);
         return znak;
+    }
+
+    public String getString() {
+        String text = scanner.nextLine();
+        return text;
     }
 
     public char getCharABC() {
@@ -129,10 +135,11 @@ public class ScannerWork {
                 }
             } while (!flag);
 //            return authorToModify;
-        } else {
+        }
+        else {
             try {
-                throw new NoSuchAuthorException("No such Author in the database.");
-            } catch (NoSuchAuthorException e) {
+                throw new NoSuchItemInDatabaseException("No such Author in the database.");
+            } catch (NoSuchItemInDatabaseException e) {
                 System.out.println(e.getMessage());
 
             }
@@ -234,5 +241,94 @@ public class ScannerWork {
         client.setIdNumber(idNumber);
 
         return client;
+    }
+
+    public void modifyClient(Long clientId) {
+        Optional<Client> optionalClient = entityDao.getById(Client.class, clientId);
+        if (optionalClient.isPresent()) {
+            Client clientToModify = optionalClient.get();
+
+            boolean flag = false;
+            char znak = 'z';
+            do {
+                System.out.println();
+                System.out.println("Choose:\n a) update name\n b) update surname\n c) update idNumber");
+                znak = getCharABC();
+                switch (znak) {
+                    case 'a':
+                        System.out.println("Get new clients name:");
+                        String name = scanner.nextLine();
+                        clientToModify.setName(name);
+
+                        entityDao.saveOrUpdate(clientToModify);
+                        flag = true;
+                        break;
+                    case 'b':
+                        System.out.println("Get new clients surname:");
+                        String newSurname = scanner.nextLine();
+                        clientToModify.setSurname(newSurname);
+
+                        entityDao.saveOrUpdate(clientToModify);
+                        flag = true;
+                        break;
+                    case 'c':
+                        System.out.println("Get new clients idNumber:");
+                        String idNumber = scanner.nextLine();
+                        clientToModify.setIdNumber(idNumber);
+
+                        entityDao.saveOrUpdate(clientToModify);
+                        flag = true;
+                        break;
+                }
+            } while (!flag);
+//            return authorToModify;
+        }
+        else {
+            try {
+                throw new NoSuchItemInDatabaseException("No such Client in the database.");
+            } catch (NoSuchItemInDatabaseException e) {
+                System.out.println(e.getMessage());
+
+            }
+        }
+    }
+
+    public Client test(Long clientId) throws NoSuchItemInDatabaseException {
+        Optional<Client> optionalClient = entityDao.getById(Client.class, clientId);
+        if (optionalClient.isPresent()) {
+            Client clientToModify = optionalClient.get();
+
+            System.out.println("Get new clients surname:");
+            String newSurname = scanner.nextLine();
+            clientToModify.setSurname(newSurname);
+
+            return clientToModify;
+        } else {
+            throw new NoSuchItemInDatabaseException("No such Client in database.");
+        }
+    }
+
+    public void printMessageY(List<Book> bookList) {
+        if (bookList.size() > 0) {
+            bookList.forEach(System.err::println);
+        } else {
+            System.err.println("All books available.");
+        }
+    }
+
+    public void printMessageZ(List<Book> bookList, Long numberOfDays) {
+        if (bookList.size() > 0) {
+            bookList.forEach(System.err::println);
+        } else {
+            System.err.println("No books have been lent in last " + numberOfDays + " days.");
+        }
+    }
+
+    public void printMessage3(Client client) {
+        if (client != null) {
+            System.err.println(client);
+        } else {
+            System.err.println("No one have lent books.");
+        }
     }
 }

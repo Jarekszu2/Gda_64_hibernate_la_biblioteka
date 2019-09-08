@@ -1,5 +1,6 @@
 package biblioteka.packDao;
 
+import biblioteka.packModel.Book;
 import biblioteka.packUtil.HibernateUtil;
 import biblioteka.packModel.Author;
 import org.hibernate.HibernateException;
@@ -11,6 +12,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class AuthorDao {
     private EntityDao entityDao = new EntityDao();
@@ -47,7 +49,38 @@ public class AuthorDao {
         }
     }
 
-    public void deleteAuthor() {
+    public void addConnectionAuthor_Book(Long idAuthor, Long idBook) {
+        Optional<Author> optAuthor = entityDao.getById(Author.class, idAuthor);
+        if (optAuthor.isPresent()) {
+            Author author = optAuthor.get();
 
+            Optional<Book> optionalBook = entityDao.getById(Book.class, idBook);
+            if (optionalBook.isPresent()) {
+                Book book = optionalBook.get();
+
+                author.getBooks().add(book);
+//                book.getAuthors().add(author);
+
+                entityDao.saveOrUpdate(author);
+//                entityDao.saveOrUpdate(book);
+            }
+        }
+    }
+
+    public void findAuthorsBySurname(String surname) {
+        List<Author> authorList = new ArrayList<>();
+        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+        try (Session session = sessionFactory.openSession()) {
+            CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+            CriteriaQuery<Author> stringCriteriaQuery = criteriaBuilder.createQuery(Author.class);
+            Root<Author> root = stringCriteriaQuery.from(Author.class);
+
+            stringCriteriaQuery.select(root).where(
+                criteriaBuilder.equal(root.get("surname"), surname));
+
+            authorList.addAll(session.createQuery(stringCriteriaQuery).list());
+
+            authorList.forEach(System.err::println);
+        }
     }
 }

@@ -27,7 +27,7 @@ public class Author implements IBaseEntity {
     @Column(nullable = false)
     private LocalDate dateOfBirth;
     // Z powodu relacji ManyToMany mamy tabelę pośredniczącą o nazwie Author_Book.
-    // zapytanie musi dotyczyć tabeli pośredniczącej i zliczyć wystąpienia autora wtej tabeli
+    // zapytanie musi dotyczyć tabeli pośredniczącej i zliczyć wystąpienia autora w tej tabeli
     @Formula("(select count(*) from Author_Book ab where ab.authors_id = id)")
     private Long numberOfBooks;
 
